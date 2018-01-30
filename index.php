@@ -20,29 +20,23 @@
   </div>
 </div>
 <?php
-    if($_POST){
-    $servername = "localhost";
-    $username = "username";
-    $password = "password";
-    $database = "mcq_app";
+    if($_POST){                     //Check if form is submitted
+    include("connect.php");         //include connect.php 
+    $connection = connect();        //creates the connection with database   
+    check_connection($connection);  //checks the connection with database
     
-    $db= mysqli_connect($servername,$username,$password,$database);
-    if($db->connect_error)
-        die("Connection Failed :".$db->connect_error);
-    else
-        echo "Connected Succssfully";
-    $myid = $_POST['studid'];
-    $mypass = $_POST['pass'];
+    $myid = $_POST['studid'];       
+    $mypass = md5($_POST['pass']);  //encrypts user password in md5
     
-    $query = "SELECT id,password FROM users WHERE id='$myid' and password='$mypass' ";
-    $result = mysqli_query($db,$query);
+    $query = "SELECT id,password FROM users WHERE id='$myid' and password='$mypass' ";  //get user id & password from database
+    $result = mysqli_query($connection,$query);     //store the result of query 
     
-    $rowcount = mysqli_num_rows($result);
+    $rowcount = mysqli_num_rows($result);       //get row count
     
-    if($rowcount > 0)
+    if($rowcount > 0)                           //if record matches do login
         header("location: dashboard.php");
     else
-        echo "<script>alert('Invalid Student ID or Password');</script>";
+        echo "<script>alert('Invalid Student ID or Password');</script>";       //else alert(Invalid)
     }
 ?>
 
